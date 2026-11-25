@@ -1,0 +1,26 @@
+name: Build PrivateVPN Pro APK
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip project
+        run: unzip -o PrivateVPN_Pro_v2.zip -d extracted
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Build Debug APK
+        working-directory: ./extracted/android-app
+        run: gradle assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PrivateVPN-Pro-APK
+          path: extracted/android-app/app/build/outputs/apk/debug/app-debug.apk
+          
